@@ -3,6 +3,7 @@ import Navbar from "./layout/Navbar";
 import "./App.css";
 import Users from "./Users/Users";
 import axios from "axios";
+import Search from "./Users/Search";
 
 class App extends Component {
   state = {
@@ -16,13 +17,35 @@ class App extends Component {
     );
     this.setState({ users: res.data, loading: false });
   }
-
+  // Search Github users
+  searchUsers = async (text) => {
+    this.setState({ loading: true });
+    const res = await axios.get(
+      `https://api.github.com/search/users?q=${text}`,
+      {
+        headers: {
+          Authorization: `${process.env.REACT_APP_GITHUB_CLIENT_ID}: ${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`,
+        },
+      }
+    );
+    this.setState({ users: res.data.items, loading: false });
+  };
+  // Clear users from state
+  clearUsers = () => {
+    this.setState({ users: [], loading: false });
+  };
   render() {
+    const { users, loading } = this.state;
     return (
       <div className="App">
         <Navbar />
         <div className="container">
-          <Users users={this.state.users} loading={this.state.loading} />
+          <Search
+            searchUsers={this.searchUsers}
+            clearUsers={this.clearUsers}
+            showClear={users.length > 0 ? true : false}
+          />
+          <Users users={users} loading={loading} />
         </div>
       </div>
     );
