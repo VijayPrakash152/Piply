@@ -21,7 +21,7 @@ const Navbar = ({ icon, title }) => {
 };
 
 Navbar.defaultProps = {
-  title: "Piply",
+  title: "Gitbook",
   icon: "fa fa-github",
 };
 
